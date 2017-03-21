@@ -23,7 +23,6 @@ var _test = require('tape-promise');
 var test = _test(tape);
 
 var path = require('path');
-var fs = require('fs');
 var util = require('util');
 
 var hfc = require('fabric-client');
@@ -64,23 +63,10 @@ test('\n\n***** End-to-end flow: invoke transaction to move money *****', (t) =>
 	// submit the request. intentionally we are using a different org
 	// than the one that instantiated the chaincode, although either org
 	// should work properly
-	var org = 'org2';
+	var org = 'org1';
 	var client = new hfc();
 	var chain = client.newChain(e2e.channel);
-
-	var caRootsPath = ORGS.orderer.tls_cacerts;
-	let data = fs.readFileSync(path.join(__dirname, caRootsPath));
-	let caroots = Buffer.from(data).toString();
-
-	chain.addOrderer(
-		new Orderer(
-			ORGS.orderer.url,
-			{
-				'pem': caroots,
-				'ssl-target-name-override': ORGS.orderer['server-hostname']
-			}
-		)
-	);
+	chain.addOrderer(new Orderer(ORGS.orderer));
 
 	var orgName = ORGS[org].name;
 
@@ -89,25 +75,12 @@ test('\n\n***** End-to-end flow: invoke transaction to move money *****', (t) =>
 	// set up the chain to use each org's 'peer1' for
 	// both requests and events
 	for (let key in ORGS) {
-		if (ORGS.hasOwnProperty(key) && typeof ORGS[key].peer1 !== 'undefined') {
-			let data = fs.readFileSync(path.join(__dirname, ORGS[key].peer1['tls_cacerts']));
-			let peer = new Peer(
-				ORGS[key].peer1.requests,
-				{
-					pem: Buffer.from(data).toString(),
-					'ssl-target-name-override': ORGS[key].peer1['server-hostname']
-				}
-			);
+		if (ORGS.hasOwnProperty(key) && typeof ORGS[key]['fabric-peer-1c'] !== 'undefined') {
+			let peer = new Peer(ORGS[key]['fabric-peer-1c'].requests);
 			chain.addPeer(peer);
 
 			let eh = new EventHub();
-			eh.setPeerAddr(
-				ORGS[key].peer1.events,
-				{
-					pem: Buffer.from(data).toString(),
-					'ssl-target-name-override': ORGS[key].peer1['server-hostname']
-				}
-			);
+			eh.setPeerAddr(ORGS[key]['fabric-peer-1c'].events);
 			eh.connect();
 			eventhubs.push(eh);
 			allEventhubs.push(eh);
@@ -157,6 +130,7 @@ test('\n\n***** End-to-end flow: invoke transaction to move money *****', (t) =>
 		var header   = results[2];
 		var all_good = true;
 		for(var i in proposalResponses) {
+			logger.info("Proposal Response: %j", proposalResponses);
 			let one_good = false;
 			if (proposalResponses && proposalResponses[0].response && proposalResponses[0].response.status === 200) {
 				one_good = true;
@@ -192,7 +166,7 @@ test('\n\n***** End-to-end flow: invoke transaction to move money *****', (t) =>
 							t.fail('The balance transfer transaction was invalid, code = ' + code);
 							reject();
 						} else {
-							t.pass('The balance transfer transaction has been committed on peer '+ eh.ep._endpoint.addr);
+							t.pass('The balance transfer transaction has been committed on peer '+ eh.ep.addr);
 							resolve();
 						}
 					});

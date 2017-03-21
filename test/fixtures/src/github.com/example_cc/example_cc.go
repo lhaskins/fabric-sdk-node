@@ -64,6 +64,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response  {
 		return shim.Error(err.Error())
 	}
 
+        fmt.Println("########### example_cc Init Finished ###########")
 	return shim.Success(nil)
 
 

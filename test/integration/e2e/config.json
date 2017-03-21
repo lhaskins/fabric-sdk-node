@@ -1,43 +1,21 @@
 {
-	"test-network": {
-		"orderer": {
-			"url": "grpcs://localhost:7050",
-			"server-hostname": "orderer0",
-			"tls_cacerts": "../../fixtures/tls/orderer/ca-cert.pem"
-		},
-		"org1": {
-			"name": "peerOrg1",
-			"mspid": "Org1MSP",
-			"ca": "http://localhost:7054",
-			"peer1": {
-				"requests": "grpcs://localhost:7051",
-				"events": "grpcs://localhost:7053",
-				"server-hostname": "peer0",
-				"tls_cacerts": "../../fixtures/tls/peers/peer0/ca-cert.pem"
-			},
-			"peer2": {
-				"requests": "grpcs://localhost:7056",
-				"events": "grpcs://localhost:7058",
-				"server-hostname": "peer1",
-				"tls_cacerts": "../../fixtures/tls/peers/peer1/ca-cert.pem"
-			}
-		},
-		"org2": {
-			"name": "peerOrg2",
-			"mspid": "Org2MSP",
-			"ca": "http://localhost:8054",
-			"peer1": {
-				"requests": "grpcs://localhost:8051",
-				"events": "grpcs://localhost:8053",
-				"server-hostname": "peer2",
-				"tls_cacerts": "../../fixtures/tls/peers/peer2/ca-cert.pem"
-			},
-			"peer2": {
-				"requests": "grpcs://localhost:8056",
-				"events": "grpcs://localhost:8058",
-				"server-hostname": "peer3",
-				"tls_cacerts": "../../fixtures/tls/peers/peer3/ca-cert.pem"
-			}
-		}
-	}
+        "test-network": {
+                "orderer": {
+                        "url": "grpc://306f7f1bcfef47479ef8dd27280decd7-fabric-orderer-0a.2.secure.blockchain.ibm.com:32005",
+                        "server-hostname": "orderer0"
+                        },
+                "org1": {
+                        "name": "SpringTime",
+                        "mspid": "PeerOrg1",
+                        "ca": "http://306f7f1bcfef47479ef8dd27280decd7-fabric-ca-1a.2.secure.blockchain.ibm.com:32011",
+                        "fabric-peer-1a": {
+                                "requests": "grpc://306f7f1bcfef47479ef8dd27280decd7-fabric-peer-1a.2.secure.blockchain.ibm.com:32021",
+                                "events": "grpc://306f7f1bcfef47479ef8dd27280decd7-fabric-peer-1a.2.secure.blockchain.ibm.com:32020"
+                        },
+                        "fabric-peer-1c": {
+                                "requests": "grpc://306f7f1bcfef47479ef8dd27280decd7-fabric-peer-1c.2.secure.blockchain.ibm.com:32021",
+                                "events": "grpc://306f7f1bcfef47479ef8dd27280decd7-fabric-peer-1c.2.secure.blockchain.ibm.com:32020"
+                        }
+                }
+        }
 }

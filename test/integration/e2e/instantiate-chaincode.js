@@ -23,7 +23,6 @@ var _test = require('tape-promise');
 var test = _test(tape);
 
 var path = require('path');
-var fs = require('fs');
 var util = require('util');
 
 var hfc = require('fabric-client');
@@ -65,20 +64,7 @@ test('\n\n***** End-to-end flow: instantiate chaincode *****', (t) => {
 	var org = 'org1';
 	var client = new hfc();
 	var chain = client.newChain(e2e.channel);
-
-	var caRootsPath = ORGS.orderer.tls_cacerts;
-	let data = fs.readFileSync(path.join(__dirname, caRootsPath));
-	let caroots = Buffer.from(data).toString();
-
-	chain.addOrderer(
-		new Orderer(
-			ORGS.orderer.url,
-			{
-				'pem': caroots,
-				'ssl-target-name-override': ORGS.orderer['server-hostname']
-			}
-		)
-	);
+	chain.addOrderer(new Orderer(ORGS.orderer));
 
 	var orgName = ORGS[org].name;
 
@@ -86,26 +72,14 @@ test('\n\n***** End-to-end flow: instantiate chaincode *****', (t) => {
 		eventhubs = [];
 	// set up the chain to use each org's 'peer1' for
 	// both requests and events
+	logger.info('Now set the peer');
 	for (let key in ORGS) {
-		if (ORGS.hasOwnProperty(key) && typeof ORGS[key].peer1 !== 'undefined') {
-			let data = fs.readFileSync(path.join(__dirname, ORGS[key].peer1['tls_cacerts']));
-			let peer = new Peer(
-				ORGS[key].peer1.requests,
-				{
-					pem: Buffer.from(data).toString(),
-					'ssl-target-name-override': ORGS[key].peer1['server-hostname']
-				}
-			);
+		if (ORGS.hasOwnProperty(key) && typeof ORGS[key]['fabric-peer-1a'] !== 'undefined') {
+			let peer = new Peer(ORGS[key]['fabric-peer-1a'].requests);
 			chain.addPeer(peer);
 
 			let eh = new EventHub();
-			eh.setPeerAddr(
-				ORGS[key].peer1.events,
-				{
-					pem: Buffer.from(data).toString(),
-					'ssl-target-name-override': ORGS[key].peer1['server-hostname']
-				}
-			);
+			eh.setPeerAddr(ORGS[key]['fabric-peer-1a'].events);
 			eh.connect();
 			eventhubs.push(eh);
 			allEventhubs.push(eh);
@@ -127,7 +101,8 @@ test('\n\n***** End-to-end flow: instantiate chaincode *****', (t) => {
 		// read the config block from the orderer for the chain
 		// and initialize the verify MSPs based on the participating
 		// organizations
-		return chain.initialize();
+		logger.info('initialize the channel!!');
+//		return chain.initialize();
 	}, (err) => {
 
 		t.fail('Failed to enroll user \'admin\'. ' + err);
@@ -135,6 +110,7 @@ test('\n\n***** End-to-end flow: instantiate chaincode *****', (t) => {
 
 	}).then((success) => {
 
+		logger.info('prep the instantiation!!');
 		nonce = utils.getNonce();
 		tx_id = chain.buildTransactionID(nonce, the_user);
 
@@ -149,8 +125,13 @@ test('\n\n***** End-to-end flow: instantiate chaincode *****', (t) => {
 			txId: tx_id,
 			nonce: nonce
 		};
+		logger.info('instantiate the chaincode!! %j', request);
+		logger.info('instantiate the chaincode!! %j', chain.getPeers());
 
-		return chain.sendInstantiateProposal(request);
+		return chain.initialize().then(()=>{
+			chain.sendInstantiateProposal(request)
+		});
+//		return chain.sendInstantiateProposal(request);
 
 	}, (err) => {
 
@@ -159,6 +140,7 @@ test('\n\n***** End-to-end flow: instantiate chaincode *****', (t) => {
 
 	}).then((results) => {
 
+		logger.info("Results: %j", results);
 		var proposalResponses = results[0];
 
 		var proposal = results[1];
@@ -193,7 +175,7 @@ test('\n\n***** End-to-end flow: instantiate chaincode *****', (t) => {
 					let handle = setTimeout(reject, 30000);
 
 					eh.registerTxEvent(deployId.toString(), (tx, code) => {
-						t.pass('The chaincode instantiate transaction has been committed on peer '+ eh.ep._endpoint.addr);
+						t.pass('The chaincode instantiate transaction has been committed on peer '+ eh.ep.addr);
 						clearTimeout(handle);
 						eh.unregisterTxEvent(deployId);
 

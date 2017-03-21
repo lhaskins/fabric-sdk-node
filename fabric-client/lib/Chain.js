@@ -122,7 +122,9 @@ var Chain = class {
 	 * into this chain.
 	 */
 	initialize() {
+		logger.info('in initialize!!!');
 		var self = this;
+		logger.info('get channel config!!!');
 		return this.getChannelConfig()
 		.then(
 			function(config_envelope) {

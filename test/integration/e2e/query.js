@@ -23,7 +23,6 @@ var _test = require('tape-promise');
 var test = _test(tape);
 
 var path = require('path');
-var fs = require('fs');
 var util = require('util');
 
 var hfc = require('fabric-client');
@@ -58,14 +57,8 @@ test('\n\n***** End-to-end flow: query chaincode *****', (t) => {
 	// set up the chain to use each org's 'peer1' for
 	// both requests and events
 	for (let key in ORGS) {
-		if (ORGS.hasOwnProperty(key) && typeof ORGS[key].peer1 !== 'undefined') {
-			let data = fs.readFileSync(path.join(__dirname, ORGS[key].peer1['tls_cacerts']));
-			let peer = new Peer(
-				ORGS[key].peer1.requests,
-				{
-					pem: Buffer.from(data).toString(),
-					'ssl-target-name-override': ORGS[key].peer1['server-hostname']
-				});
+		if (ORGS.hasOwnProperty(key) && typeof ORGS[key]['fabric-peer-1a'] !== 'undefined') {
+			let peer = new Peer(ORGS[key]['fabric-peer-1a'].requests);
 			chain.addPeer(peer);
 		}
 	}
@@ -83,6 +76,7 @@ test('\n\n***** End-to-end flow: query chaincode *****', (t) => {
 		nonce = utils.getNonce();
 		tx_id = chain.buildTransactionID(nonce, the_user);
 
+		logger.info("About the query...");
 		// send query
 		var request = {
 			chaincodeId : e2e.chaincodeId,
@@ -100,6 +94,7 @@ test('\n\n***** End-to-end flow: query chaincode *****', (t) => {
 		t.fail('Failed to get submitter \'admin\'. Error: ' + err.stack ? err.stack : err );
 		t.end();
 	}).then((response_payloads) => {
+		logger.info("Payloads: %j", response_payloads);
 		if (response_payloads) {
 			for(let i = 0; i < response_payloads.length; i++) {
 				t.equal(response_payloads[i].toString('utf8'),'300','checking query results are correct that user b has 300 now after the move');
