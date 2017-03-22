@@ -66,7 +66,7 @@ test('\n\n***** End-to-end flow: invoke transaction to move money *****', (t) =>
 	var org = 'org1';
 	var client = new hfc();
 	var chain = client.newChain(e2e.channel);
-	chain.addOrderer(new Orderer(ORGS.orderer));
+	chain.addOrderer(new Orderer(ORGS.orderer.url));
 
 	var orgName = ORGS[org].name;
 

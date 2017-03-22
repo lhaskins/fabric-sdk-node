@@ -31,8 +31,8 @@ var ecdsaKey = require('fabric-client/lib/impl/ecdsa/key.js');
 module.exports.CHAINCODE_PATH = 'github.com/example_cc';
 module.exports.CHAINCODE_MARBLES_PATH = 'github.com/marbles_cc';
 module.exports.END2END = {
-	channel: 'mememe',
-	chaincodeId: 'mememe',
+	channel: 'monkey',
+	chaincodeId: 'monkey',
 	chaincodeVersion: 'v0'
 };
 
@@ -195,5 +195,5 @@ module.exports.getSubmitter = function(client, test, loadFromConfig, org) {
 		}
 	}
 
-	return getSubmitter('admin', '6fa60d5257', client, test, fromConfig, userOrg);
+	return getSubmitter('admin', 'c5e7343863', client, test, fromConfig, userOrg);
 };

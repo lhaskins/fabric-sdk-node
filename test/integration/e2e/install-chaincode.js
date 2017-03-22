@@ -67,7 +67,8 @@ test('\n\n***** End-to-end flow: chaincode install *****\n\n', (t) => {
 function installChaincode(org, t) {
 	var client = new hfc();
 	var chain = client.newChain(testUtil.END2END.channel);
-	chain.addOrderer(new Orderer(ORGS.orderer));
+//	chain.addOrderer(new Orderer(ORGS.orderer));
+	chain.addOrderer(new Orderer(ORGS.orderer.url));
 
 	var orgName = ORGS[org].name;
 

@@ -64,7 +64,7 @@ test('\n\n***** End-to-end flow: instantiate chaincode *****', (t) => {
 	var org = 'org1';
 	var client = new hfc();
 	var chain = client.newChain(e2e.channel);
-	chain.addOrderer(new Orderer(ORGS.orderer));
+	chain.addOrderer(new Orderer(ORGS.orderer.url));
 
 	var orgName = ORGS[org].name;
 
@@ -102,7 +102,7 @@ test('\n\n***** End-to-end flow: instantiate chaincode *****', (t) => {
 		// and initialize the verify MSPs based on the participating
 		// organizations
 		logger.info('initialize the channel!!');
-//		return chain.initialize();
+		return chain.initialize();
 	}, (err) => {
 
 		t.fail('Failed to enroll user \'admin\'. ' + err);
@@ -128,10 +128,7 @@ test('\n\n***** End-to-end flow: instantiate chaincode *****', (t) => {
 		logger.info('instantiate the chaincode!! %j', request);
 		logger.info('instantiate the chaincode!! %j', chain.getPeers());
 
-		return chain.initialize().then(()=>{
-			chain.sendInstantiateProposal(request)
-		});
-//		return chain.sendInstantiateProposal(request);
+		return chain.sendInstantiateProposal(request);
 
 	}, (err) => {
 

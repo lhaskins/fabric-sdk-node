@@ -1,20 +1,20 @@
 {
         "test-network": {
                 "orderer": {
-                        "url": "grpc://306f7f1bcfef47479ef8dd27280decd7-fabric-orderer-0a.2.secure.blockchain.ibm.com:32005",
-                        "server-hostname": "orderer0"
+                        "url": "grpc://ldn1-zbc5a.2.secure.blockchain.ibm.com:35105",
+                        "server-hostname": "fabric-orderer-0a"
                         },
                 "org1": {
-                        "name": "SpringTime",
+                        "name": "MonkeyPlay",
                         "mspid": "PeerOrg1",
-                        "ca": "http://306f7f1bcfef47479ef8dd27280decd7-fabric-ca-1a.2.secure.blockchain.ibm.com:32011",
+                        "ca": "http://ldn1-zbc5a.2.secure.blockchain.ibm.com:35111",
                         "fabric-peer-1a": {
-                                "requests": "grpc://306f7f1bcfef47479ef8dd27280decd7-fabric-peer-1a.2.secure.blockchain.ibm.com:32021",
-                                "events": "grpc://306f7f1bcfef47479ef8dd27280decd7-fabric-peer-1a.2.secure.blockchain.ibm.com:32020"
+                                "requests": "grpc://ldn1-zbc5a.2.secure.blockchain.ibm.com:35121",
+                                "events": "grpc://ldn1-zbc5a.2.secure.blockchain.ibm.com:35120"
                         },
                         "fabric-peer-1c": {
-                                "requests": "grpc://306f7f1bcfef47479ef8dd27280decd7-fabric-peer-1c.2.secure.blockchain.ibm.com:32021",
-                                "events": "grpc://306f7f1bcfef47479ef8dd27280decd7-fabric-peer-1c.2.secure.blockchain.ibm.com:32020"
+                                "requests": "grpc://ldn1-zbc5c.2.secure.blockchain.ibm.com:35121",
+                                "events": "grpc://ldn1-zbc5c.2.secure.blockchain.ibm.com:35120"
                         }
                 }
         }
