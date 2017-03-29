@@ -18,7 +18,7 @@ To build and test, the following pre-requisites must be installed first:
 * node runtime version 6.9.x, note that 7.0 is not supported at this point
 * npm tool version 3.10.x
 * gulp command
-* docker (not required if you only want to run the headless tests with `npm test-headless`, see below)
+* docker (not required if you only want to run the headless tests with `npm test-headless` or if you are running against an existing network, see below)
 
 Clone the project and launch the following commands to install the dependencies and perform various tasks.
 
@@ -63,6 +63,10 @@ You can build the docker images in your native host (Mac, Ubuntu, Windows, etc.)
     * `node test/integration/e2e/instantiate-chaincode.js`
     * `node test/integration/e2e/invoke-transaction.js`
     * `node test/integration/e2e/query.js`
+  * Test on a remote network, make sure to modify the following first:
+    * Edit `test/integration/e2e/config.json` to include specifics for network
+    * Edit `test/unit/util.js to include` specifics for channel and chaincode ID (beginning of file)
+    * Edit `test/unit/util.js to include` specifics for username and password (at the end of file) 
 
 ### Set Up CouchDB Database for couchdb-fabricca-tests.js
 
